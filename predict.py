@@ -1,4 +1,4 @@
-
+#import tensorflow.lite as tflite
 import tflite_runtime.interpreter as tflite
 import os
 import numpy as np
@@ -21,12 +21,13 @@ def prepare_image(img, target_size):
     img = img.resize(target_size, Image.NEAREST)
     return img
 
+MODEL_NAME = os.getenv('MODEL_NAME', 'bees-wasps.tflite')
 
 def preprocess_input(x):
     x /= 255
     return x
 
-interpreter = tflite.Interpreter(model_path='bees-wasps.tflite')
+interpreter = tflite.Interpreter(model_path=MODEL_NAME)
 interpreter.allocate_tensors()
 
 input_index = interpreter.get_input_details()[0]['index']
@@ -50,3 +51,4 @@ def lambda_handler(event, context):
     result = {
         'prediction': pred
     }
+    return result
